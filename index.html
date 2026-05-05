@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Observaciones CGR — Precisiones MADR | APPA</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f4f3ee;
+      color: #1a1a18;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .page-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #1a1a18;
+      padding-bottom: 1rem;
+    }
+
+    header .kicker {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #5f5e5a;
+      margin-bottom: 6px;
+    }
+
+    header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.3;
+      color: #1a1a18;
+    }
+
+    header p.sub {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #5f5e5a;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .controls span {
+      font-size: 12px;
+      color: #888780;
+    }
+
+    .tbl-tag {
+      font-size: 12px;
+      padding: 5px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      border: 1px solid;
+      transition: all 0.15s;
+      background: none;
+      font-family: inherit;
+    }
+
+    .tbl-tag.active-cgr {
+      background: #B5D4F4;
+      color: #0C447C;
+      border-color: #378ADD;
+    }
+
+    .tbl-tag.active-madr {
+      background: #C0DD97;
+      color: #3B6D11;
+      border-color: #639922;
+    }
+
+    .tbl-tag.inactive {
+      background: #f4f3ee;
+      color: #888780;
+      border-color: #ccc;
+    }
+
+    .tema-block {
+      margin-bottom: 20px;
+      border: 1px solid #d3d1c7;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .tema-header {
+      padding: 10px 16px;
+      background: #f4f3ee;
+      border-bottom: 1px solid #d3d1c7;
+      font-size: 13px;
+      font-weight: 600;
+      color: #444441;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tema-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #E6F1FB;
+      color: #185FA5;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .panel-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 640px) {
+      .panel-row { grid-template-columns: 1fr; }
+    }
+
+    .col-cgr {
+      border-right: 1px solid #d3d1c7;
+    }
+
+    .col-head {
+      padding: 8px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      border-bottom: 1px solid #d3d1c7;
+    }
+
+    .col-head.cgr {
+      color: #185FA5;
+      background: #E6F1FB;
+    }
+
+    .col-head.madr {
+      color: #3B6D11;
+      background: #EAF3DE;
+    }
+
+    .col-body {
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #1a1a18;
+    }
+
+    .col-body.collapsed {
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .col-body.expanded {
+      display: block;
+    }
+
+    .expand-btn {
+      display: block;
+      width: 100%;
+      background: none;
+      border: none;
+      border-top: 1px solid #d3d1c7;
+      padding: 8px 14px;
+      font-size: 12px;
+      color: #888780;
+      cursor: pointer;
+      text-align: center;
+      font-family: inherit;
+      transition: background 0.12s;
+    }
+
+    .expand-btn:hover {
+      background: #f4f3ee;
+      color: #1a1a18;
+    }
+
+    footer {
+      margin-top: 2.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid #d3d1c7;
+      font-size: 11px;
+      color: #888780;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <header>
+    <p class="kicker">Ministerio de Agricultura y Desarrollo Rural — Contraloría General de la República</p>
+    <h1>Observaciones CGR y Precisiones MADR<br>sobre las Áreas Protegidas para la Producción de Alimentos (APPA)</h1>
+    <p class="sub">Tabla de respuesta institucional a la advertencia fiscal</p>
+  </header>
+
+  <div class="controls">
+    <span>Mostrar:</span>
+    <button class="tbl-tag active-cgr" id="btn-cgr" onclick="toggleCol('cgr')">Observaciones CGR</button>
+    <button class="tbl-tag active-madr" id="btn-madr" onclick="toggleCol('madr')">Precisiones MADR</button>
+  </div>
+
+  <!-- TEMA 1 -->
+  <div class="tema-block">
+    <div class="tema-header"><span class="tema-num">1</span> Prevención de amenazas y riesgos de desastres</div>
+    <div class="panel-row" id="row-1">
+      <div class="col-cgr" id="col-cgr-1">
+        <div class="col-head cgr">Observación CGR</div>
+        <div class="col-body collapsed" id="body-cgr-1">El MADR no aplicó la prevalencia de las determinantes de ordenamiento territorial de nivel 1 en materia de prevención de amenazas y riesgos de desastres al momento de identificar las APPA.<br><br>En municipios cobijados por el estado de emergencia declarado mediante el Decreto 150 de 2026, se identificaron ZPPA y APPA sin considerar la condición de desastre o calamidad pública, asignando usos dirigidos a la producción de alimentos sobre suelos en situación de riesgo.<br><br>La Contraloría advierte que comprometer recursos en suelos vulnerables constituye una gestión fiscal ineficiente.</div>
+        <button class="expand-btn" onclick="toggle('body-cgr-1', this)">Ver más ▾</button>
+      </div>
+      <div id="col-madr-1">
+        <div class="col-head madr">Precisión MADR</div>
+        <div class="col-body collapsed" id="body-madr-1">El proceso de identificación de las áreas protegidas para la producción de alimentos sí contempló determinantes de ordenamiento territorial de nivel 1, a través de un intercambio con las autoridades competentes de información que incluyó elementos de gestión del riesgo de desastres y cambio climático.<br><br>En los documentos técnicos de soporte de la declaratoria de áreas protegidas para la producción de alimentos se desarrollaron estos aspectos.<br><br>Se precisa que, dentro de las determinantes de nivel 1, existen figuras compatibles con la actividad agropecuaria. En todo caso, conforme al alcance orientador de esta determinante de ordenamiento territorial y la distribución de competencias contemplada en el artículo 29 de la Ley 1454 de 2011, corresponde a los municipios la reglamentación específica de usos del suelo.</div>
+        <button class="expand-btn" onclick="toggle('body-madr-1', this)">Ver más ▾</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEMA 2 -->
+  <div class="tema-block">
+    <div class="tema-header"><span class="tema-num">2</span> Financiamiento de la determinante de ordenamiento territorial</div>
+    <div class="panel-row" id="row-2">
+      <div class="col-cgr" id="col-cgr-2">
+        <div class="col-head cgr">Observación CGR</div>
+        <div class="col-body collapsed" id="body-cgr-2">Pese a que el Plan Nacional de Inversiones Públicas 2023-2026 asignó $28,8 billones al eje de ordenamiento territorial, no se registra programación de gastos ni ejecución asociada a las APPA en el banco de proyectos de inversión nacional ni en el presupuesto del MADR.<br><br>Tampoco se reportaron recursos de entidades territoriales con dicho destino. La Agencia de Desarrollo Rural carece de proyectos de inversión vinculados a las APPA o al derecho humano a la alimentación. La Contraloría señala que esta situación pone en riesgo la aplicación del artículo 32 del PND y desconoce los principios de planeación, legalidad del gasto y universalidad presupuestal.<br><br>Particularmente, la Contraloría indica un riesgo de desconocimiento de los procedimientos y mecanismos para la elaboración, aprobación, ejecución, seguimiento, evaluación y control de los planes de desarrollo, conforme a lo dispuesto en la Ley 152 de 1994 (Ley Orgánica del Plan de Desarrollo). Especialmente, en lo que tiene que ver con los planes de acción de los organismos públicos de todo orden que tengan como base el Plan Nacional de Desarrollo (artículo 26) y los planes de acción de las entidades territoriales (artículo 41). De ahí que se advierta una falta de armonización con los planes de desarrollo territorial.<br><br>Se condiciona la ejecución presupuestal a la aprobación de un plan de acción para la producción de alimentos que es diferente al plan de acción del Plan Nacional de Desarrollo dispuesto en la Ley 152 de 1994. Además, la declaratoria de APPA imparte lineamientos a los entes territoriales en relación con la modificación del presupuesto de inversión y reformas tributarias, pero no se desarrollaron procedimientos para la identificación de fuentes y financiación del Plan de Inversiones Públicas que conlleven a la aplicación de los principios de planeación de los gastos necesarios para atender la declaratoria de las APPA, especialmente el principio de legalidad del gasto.</div>
+        <button class="expand-btn" onclick="toggle('body-cgr-2', this)">Ver más ▾</button>
+      </div>
+      <div id="col-madr-2">
+        <div class="col-head madr">Precisión MADR</div>
+        <div class="col-body collapsed" id="body-madr-2">Es clave, en este punto, distinguir dos planos que la observación tiende a superponer: de un lado, la incorporación de la determinante de ordenamiento territorial como tal, que opera por mandato normativo sobre los procesos de elaboración de los instrumentos de planificación territorial; y de otro lado, las apuestas amplias de política pública que se activan en el marco del Sistema Nacional de Reforma Agraria y Desarrollo Rural (SINRADR), las cuales tienen una lógica presupuestal diferenciada.<br><br>La declaratoria de las APPA prevé la formulación de un plan de acción para la producción de alimentos inscrito en la planificación presupuestal habilitada para el SINRADR. Este instrumento no es asimilable al plan de acción de las entidades públicas al que se refiere el artículo 26 de la Ley 152 de 1994, sino que opera como un mecanismo de alineación de prioridades entre los municipios declarados APPA y los organismos públicos que integran los subsistemas del SINRADR, conforme al Marco Fiscal de Mediano Plazo y al Marco de Gasto de Mediano Plazo de cada sector concurrente.<br><br>Debe considerarse que el Acto Legislativo 3 de 2024 encargó al legislador, mediante ley orgánica de competencias, definir los mecanismos financieros y operacionales de acompañamiento técnico y fortalecimiento institucional para que las entidades beneficiarias del Sistema General de Participaciones con menores capacidades cuenten con recursos, proyectos y metas orientados al desarrollo institucional, la gestión catastral eficiente y la implementación adecuada de instrumentos de ordenamiento territorial. Dicha ley deberá establecer obligaciones, incentivos y sanciones frente a la actualización de los instrumentos de ordenamiento territorial.<br><br>Pese a que esta ley orgánica no ha sido expedida, el MADR a través del CONPES 4184 de 2026 contempló una estrategia nacional de cooperación técnica dirigida a entidades territoriales y grupos de interés para promover la incorporación de las APPA en los instrumentos de ordenamiento territorial de escala departamental y municipal.<br><br>Adicionalmente, a través del Acto Legislativo 1 de 2023, que modificó el artículo 64 de la Constitución Política y reconoció al campesinado como sujeto de especial protección, se dispuso la creación de un trazador presupuestal como herramienta para el seguimiento del gasto y la inversión realizada por múltiples sectores y entidades, dirigida a atender a la población campesina ubicada en zona rural y rural dispersa. De conformidad con lo dispuesto en el Decreto 1004 de 2024, el Departamento Nacional de Planeación y el Ministerio de Agricultura y Desarrollo Rural, con el concurso de las entidades del orden nacional, concertaron durante 2025 con la Comisión Mixta Nacional para Asuntos Campesinos el diseño de dicha herramienta. Este trazador presupuestal campesino (TPC) se establece como un instrumento de marcación y seguimiento para identificar los recursos destinados a la focalización del gasto público orientado hacia las entidades estatales a nivel nacional y territorial, para la garantía integral de derechos del campesinado en sus dimensiones territorial-ambiental, productiva, cultural y política.<br><br>En síntesis, la situación descrita en la advertencia no refleja una inobservancia de los principios de planeación y legalidad del gasto, sino el avance en la arquitectura institucional, en materia presupuestal y de planeación, que se requiere para materializar la especial protección constitucional reconocida al campesinado y a la producción de alimentos.</div>
+        <button class="expand-btn" onclick="toggle('body-madr-2', this)">Ver más ▾</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEMA 3 -->
+  <div class="tema-block">
+    <div class="tema-header"><span class="tema-num">3</span> Procedimiento y fórmulas de coordinación con los entes territoriales</div>
+    <div class="panel-row" id="row-3">
+      <div class="col-cgr" id="col-cgr-3">
+        <div class="col-head cgr">Observación CGR</div>
+        <div class="col-body collapsed" id="body-cgr-3">La declaratoria de APPA no contempló la participación de los entes territoriales ni observó las reglas de coordinación previstas en el parágrafo 1 del artículo 10 de la Ley 388 de 1997. La Contraloría cuestiona, además, que el MADR haya establecido el procedimiento para expedir la determinante, competencia que no le correspondería. Señala también que la UPRA solo tenía atribución para definir criterios, no para identificar las áreas, y que la información utilizada provino de fuentes desactualizadas y no de las entidades competentes.</div>
+        <button class="expand-btn" onclick="toggle('body-cgr-3', this)">Ver más ▾</button>
+      </div>
+      <div id="col-madr-3">
+        <div class="col-head madr">Precisión MADR</div>
+        <div class="col-body collapsed" id="body-madr-3">La expedición de determinantes de ordenamiento territorial no quedó suspendida ni supeditada a la reglamentación prevista en el parágrafo 1 del artículo 10 de la Ley 388 de 1997.<br><br>Para esto, la Ley 489 de 1998, así como la Ley 1454 de 2011 (Ley orgánica de ordenamiento territorial) y la Ley 388 de 1997, e incluso la jurisprudencia constitucional, han dado las pautas para el ejercicio de la coordinación interinstitucional en esta materia. Además, esta declaratoria ha seguido las reglas del procedimiento común dispuestas en la Ley 1437 de 2011, en cumplimiento de principios como el de publicidad, a través de la identificación de áreas de referencia por medio de la declaratoria de Zonas de Protección para la Producción de Alimentos (ZPPA), mucho antes de la declaratoria de las APPA con el fin de garantizar la coordinación y los estándares de participación ciudadana.<br><br>En todo caso, la aparente ausencia de reglamentación se encuentra superada con la reciente expedición del Decreto 381 de 2026 (que contempla un régimen de transición) y el Acuerdo 10 de 2026 del Consejo Superior de Administración del Ordenamiento del Suelo Rural, instrumentos que fortalecen el marco jurídico en materia de coordinación interinstitucional, cuyas fórmulas en todo caso han sido observadas por el MADR y la UPRA en el proceso de identificación de las APPA.</div>
+        <button class="expand-btn" onclick="toggle('body-madr-3', this)">Ver más ▾</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEMA 4 -->
+  <div class="tema-block">
+    <div class="tema-header"><span class="tema-num">4</span> Usos del suelo en las áreas protegidas para la producción de alimentos</div>
+    <div class="panel-row" id="row-4">
+      <div class="col-cgr" id="col-cgr-4">
+        <div class="col-head cgr">Observación CGR</div>
+        <div class="col-body collapsed" id="body-cgr-4">Las restricciones de uso impuestas por las APPA son calificadas como inviables dado el déficit financiero y procedimental identificado. La Contraloría advierte que dichas restricciones limitan otras actividades productivas que contribuyen a las metas del PND en materia de seguridad alimentaria, y que en territorios con exploración o explotación minera preexistente se generan conflictos de uso con impacto fiscal, laboral y social.</div>
+        <button class="expand-btn" onclick="toggle('body-cgr-4', this)">Ver más ▾</button>
+      </div>
+      <div id="col-madr-4">
+        <div class="col-head madr">Precisión MADR</div>
+        <div class="col-body collapsed" id="body-madr-4">La declaratoria de áreas protegidas para la producción de alimentos, así como los lineamientos y parámetros para la reglamentación específica de los usos del suelo, no pueden ser entendidas como si estuvieran incorporadas de manera automática en los instrumentos de ordenamiento territorial.<br><br>Se trata, en cambio, de un insumo técnico con una doble función. Por un lado, orienta la actuación de los entes territoriales hacia los fines de protección alimentaria que justifican la determinante. De otro lado, contrarresta las asimetrías de información que enfrentan los municipios (especialmente los de menor capacidad institucional con instrumentos de ordenamiento territorial desactualizados) en los procesos amplios, participativos y multiculturales que deben rodear la adopción de decisiones sobre el uso del suelo en el ámbito local.<br><br>En este sentido, el propio documento técnico establece que, a partir de esta zonificación, los municipios definirán la reglamentación de la zonificación en el marco de sus competencias, asociando el respectivo régimen de usos del suelo de conformidad.<br><br>Además, en los documentos técnicos de soporte de la declaratoria se presentan lineamientos aplicables a otras actividades como la minería. El establecimiento de estas áreas protegidas para la producción de alimentos no tiene como propósito restringir o prohibir su desarrollo, ni condicionar las decisiones de los entes territoriales o de las autoridades ambientales. Su contenido busca orientar a los operadores jurídicos en la valoración que deben realizar de la determinante.</div>
+        <button class="expand-btn" onclick="toggle('body-madr-4', this)">Ver más ▾</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Ministerio de Agricultura y Desarrollo Rural (MADR) — Dirección de Ordenamiento Social de la Propiedad y Uso Productivo del Suelo
+  </footer>
+
+</div>
+
+<script>
+  var cgr = true, madr = true;
+
+  function toggle(id, btn) {
+    var el = document.getElementById(id);
+    var expanded = el.classList.contains('expanded');
+    el.classList.toggle('collapsed', expanded);
+    el.classList.toggle('expanded', !expanded);
+    btn.textContent = expanded ? 'Ver más ▾' : 'Ver menos ▴';
+  }
+
+  function toggleCol(col) {
+    if (col === 'cgr') {
+      cgr = !cgr;
+      document.getElementById('btn-cgr').className = 'tbl-tag ' + (cgr ? 'active-cgr' : 'inactive');
+      for (var i = 1; i <= 4; i++) {
+        document.getElementById('col-cgr-' + i).style.display = cgr ? '' : 'none';
+        updateGrid(i);
+      }
+    } else {
+      madr = !madr;
+      document.getElementById('btn-madr').className = 'tbl-tag ' + (madr ? 'active-madr' : 'inactive');
+      for (var i = 1; i <= 4; i++) {
+        document.getElementById('col-madr-' + i).style.display = madr ? '' : 'none';
+        updateGrid(i);
+      }
+    }
+  }
+
+  function updateGrid(i) {
+    var row = document.getElementById('row-' + i);
+    if (cgr && madr) row.style.gridTemplateColumns = '1fr 1fr';
+    else row.style.gridTemplateColumns = '1fr';
+  }
+</script>
+</body>
+</html>
